@@ -1,4 +1,4 @@
-# 📘 Controle de Matriz de LEDs com Raspberry Pi Pico
+# 📘 Contador Digital com Interrupções e Matriz de LEDs
 
 ## 📌 Visão Geral  
 Este projeto implementa um **contador de 0 a 9** usando uma matriz de LEDs controlada por um **Raspberry Pi Pico**. Dois botões permitem **incrementar** e **decrementar** o número exibido, enquanto um LED pisca **5 vezes por segundo** para indicar que o sistema está funcionando corretamente.  
