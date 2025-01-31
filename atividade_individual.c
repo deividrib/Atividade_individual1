@@ -9,33 +9,35 @@
 #include "include/matriz_led_control.h"
 #include "include/animacoesnumero.h"
 
-#define OUT_PIN 7
-#define LED_R_PIN 13
+// Definições de pinos
+#define OUT_PIN 7      // Pino de saída para a matriz de LEDs
+#define LED_R_PIN 13   // Pino do LED vermelho indicador
+#define BUTTON1 5      // Pino do botão 1 (incrementar número)
+#define BUTTON2 6      // Pino do botão 2 (decrementar número)
 
-#define BUTTON1 5
-#define BUTTON2 6
-
-#define DEBOUNCE_TIME 300000  // 300 ms de debounce
+#define DEBOUNCE_TIME 300000  // Tempo de debounce: 300 ms (300.000 microssegundos)
 
 // Variáveis globais
-volatile int numero_atual = 0;
-static volatile uint32_t last_time_button1 = 0;
-static volatile uint32_t last_time_button2 = 0;
+volatile int numero_atual = 0;  // Número exibido na matriz de LEDs
+static volatile uint32_t last_time_button1 = 0;  // Armazena o tempo do último clique do botão 1
+static volatile uint32_t last_time_button2 = 0;  // Armazena o tempo do último clique do botão 2
 
+// Estrutura para controlar a matriz de LEDs via PIO
 pio_t meu_pio = {
-    .pio = pio0,
-    .ok = false,
-    .i = 0,
-    .r = 0.0,
-    .g = 0.0,
-    .b = 0.0,
-    .sm = 0
+    .pio = pio0,  // Usando PIO0
+    .ok = false,  
+    .i = 0,       
+    .r = 0.0,     
+    .g = 0.0,     
+    .b = 0.0,     
+    .sm = 0       
 };
 
-// Exibe o número na matriz de LEDs
+// Função para atualizar a matriz de LEDs com base no número atual
 void atualizar_matriz_led() {
     printf("Atualizando matriz para: %d\n", numero_atual);
 
+    // Exibe o número correspondente na matriz de LEDs
     switch (numero_atual) {
         case 0: desenho_pio(numero0, &meu_pio); break;
         case 1: desenho_pio(numero1, &meu_pio); break;
@@ -51,41 +53,41 @@ void atualizar_matriz_led() {
     }
 }
 
-// Função de interrupção com debounce baseado no tempo
+// Função de interrupção para tratar eventos dos botões
 void gpio_irq_handler(uint gpio, uint32_t events) {
-    uint32_t current_time = to_us_since_boot(get_absolute_time());
+    uint32_t current_time = to_us_since_boot(get_absolute_time()); // Obtém o tempo atual
 
-    if (gpio == BUTTON1) {
-        if (current_time - last_time_button1 > DEBOUNCE_TIME) { // Debounce
-            last_time_button1 = current_time;
-            if (numero_atual < 9) numero_atual++;
+    if (gpio == BUTTON1) {  // Se o botão pressionado for o BUTTON1
+        if (current_time - last_time_button1 > DEBOUNCE_TIME) { // Verifica debounce
+            last_time_button1 = current_time; // Atualiza o tempo do último clique
+            if (numero_atual < 9) numero_atual++; // Incrementa o número até 9
             printf("Botão 1 pressionado. Número atual: %d\n", numero_atual);
-            atualizar_matriz_led();
+            atualizar_matriz_led(); // Atualiza a matriz de LEDs
         }
-    } else if (gpio == BUTTON2) {
-        if (current_time - last_time_button2 > DEBOUNCE_TIME) { // Debounce
-            last_time_button2 = current_time;
-            if (numero_atual > 0) numero_atual--;
+    } else if (gpio == BUTTON2) {  // Se o botão pressionado for o BUTTON2
+        if (current_time - last_time_button2 > DEBOUNCE_TIME) { // Verifica debounce
+            last_time_button2 = current_time; // Atualiza o tempo do último clique
+            if (numero_atual > 0) numero_atual--; // Decrementa o número até 0
             printf("Botão 2 pressionado. Número atual: %d\n", numero_atual);
-            atualizar_matriz_led();
+            atualizar_matriz_led(); // Atualiza a matriz de LEDs
         }
     }
 }
 
 int main() { 
-    stdio_init_all();
-    sleep_ms(2000);
+    stdio_init_all(); // Inicializa a saída padrão (para uso de printf)
+    sleep_ms(2000);   // Pequeno atraso para estabilizar o sistema
 
     printf("Iniciando programa...\n");
 
-    init_pio_routine(&meu_pio, OUT_PIN);
-    atualizar_matriz_led();
+    init_pio_routine(&meu_pio, OUT_PIN); // Inicializa a matriz de LEDs via PIO
+    atualizar_matriz_led(); // Exibe o número inicial na matriz
 
-    // Configuração do LED indicador
+    // Configuração do LED indicador (GPIO 13)
     gpio_init(LED_R_PIN);
     gpio_set_dir(LED_R_PIN, GPIO_OUT);
 
-    // Configuração dos botões
+    // Configuração dos botões como entrada com pull-up ativado
     gpio_init(BUTTON1);
     gpio_set_dir(BUTTON1, GPIO_IN);
     gpio_pull_up(BUTTON1);
