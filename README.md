@@ -37,7 +37,7 @@ Este sistema demonstra como **controlar uma matriz de LEDs de forma eficiente**,
 - LED indicador  
 - Fios jumpers  
 
-## 📜 Link do video
+## Link do video
 
 -https://www.youtube.com/watch?v=tbygNRUj7eA
 
