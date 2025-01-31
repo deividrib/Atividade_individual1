@@ -37,6 +37,12 @@ Este sistema demonstra como **controlar uma matriz de LEDs de forma eficiente**,
 - LED indicador  
 - Fios jumpers  
 
+## 📜 Link do video
+
+-https://www.youtube.com/watch?v=tbygNRUj7eA
+
+
+
 ## 📜 Licença  
 Este projeto é de código aberto e pode ser usado livremente para estudos e modificações.  
 
