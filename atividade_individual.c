@@ -15,7 +15,7 @@
 #define BUTTON1 5
 #define BUTTON2 6
 
-#define DEBOUNCE_TIME 300000  // 200 ms de debounce
+#define DEBOUNCE_TIME 300000  // 300 ms de debounce
 
 // Variáveis globais
 volatile int numero_atual = 0;
